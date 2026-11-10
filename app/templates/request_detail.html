@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<article class="card">
+    <div class="page-title-row">
+        <div>
+            <h1>#{{ support_request.id }} — {{ support_request.title }}</h1>
+            <p class="muted">Created at {{ support_request.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+        </div>
+        <!-- Bewust: link wordt getoond ongeacht rol. -->
+        <a class="button" href="{{ url_for('main.request_edit', request_id=support_request.id) }}">Edit request</a>
+    </div>
+
+    <dl class="details-grid">
+        <dt>Description</dt><dd>{{ support_request.description }}</dd>
+        <dt>Customer</dt><dd>{{ support_request.customer_name }} &lt;{{ support_request.customer_email }}&gt;</dd>
+        <dt>Category</dt><dd>{{ support_request.category }}</dd>
+        <dt>Priority</dt><dd><span class="badge priority-{{ support_request.priority }}">{{ support_request.priority }}</span></dd>
+        <dt>Status</dt><dd><span class="badge status-{{ support_request.status }}">{{ support_request.status }}</span></dd>
+        <dt>Assigned to</dt><dd>{{ support_request.assigned_user.name }}</dd>
+    </dl>
+</article>
+
+<section class="card">
+    <h2>Comments</h2>
+    {% for comment in support_request.comments %}
+        <article class="comment">
+            <strong>{{ comment.user.name }}</strong>
+            <span class="muted">{{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+            <p>{{ comment.body }}</p>
+        </article>
+    {% else %}
+        <p class="muted">No comments yet.</p>
+    {% endfor %}
+</section>
+
+<section class="card">
+    <h2>Audit log</h2>
+    <ul>
+        {% for entry in support_request.audit_logs %}
+            <li>{{ entry.created_at.strftime('%Y-%m-%d %H:%M') }} — {{ entry.message }}</li>
+        {% else %}
+            <li class="muted">No audit entries found.</li>
+        {% endfor %}
+    </ul>
+</section>
+{% endblock %}

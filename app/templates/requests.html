@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-title-row">
+    <div>
+        <h1>Requests</h1>
+        {% if search_query is defined %}
+            <p class="muted">Search results for: <strong>{{ search_query }}</strong></p>
+        {% else %}
+            <p class="muted">All customer requests currently known by NovaDesk.</p>
+        {% endif %}
+    </div>
+    <a class="button" href="{{ url_for('main.request_new') }}">New request</a>
+</div>
+
+<form class="search-form" method="get" action="{{ url_for('main.requests_search') }}">
+    <input type="search" name="q" placeholder="Search requests..." value="{{ search_query or '' }}">
+    <button type="submit">Search</button>
+</form>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Customer</th>
+        <th>Category</th>
+        <th>Priority</th>
+        <th>Status</th>
+        <th>Assigned to</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in support_requests %}
+        <tr>
+            <td>#{{ item.id }}</td>
+            <td>{{ item.title }}</td>
+            <td>{{ item.customer_name }}</td>
+            <td>{{ item.category }}</td>
+            <td><span class="badge priority-{{ item.priority }}">{{ item.priority }}</span></td>
+            <td><span class="badge status-{{ item.status }}">{{ item.status }}</span></td>
+            <td>{{ item.assigned_user.name if item.assigned_user else "Unassigned" }}</td>
+            <td>
+                <a href="{{ url_for('main.request_detail', request_id=item.id) }}">View</a>
+                <!-- Bewust: ook viewers zien deze link, backend blokkeert wel. -->
+                <a href="{{ url_for('main.request_edit', request_id=item.id) }}">Edit</a>
+            </td>
+        </tr>
+    {% else %}
+        <tr><td colspan="8">No requests found.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
