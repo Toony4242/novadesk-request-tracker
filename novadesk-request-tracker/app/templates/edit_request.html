@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+    <h1>Edit request #{{ support_request.id }}</h1>
+    <form method="post">
+        <label for="status">Status</label>
+        <select id="status" name="status">
+            {% for status in ['new', 'in_progress', 'waiting', 'resolved', 'closed'] %}
+                <option value="{{ status }}" {% if support_request.status == status %}selected{% endif %}>{{ status }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="priority">Priority</label>
+        <select id="priority" name="priority">
+            {% for priority in ['low', 'medium', 'high', 'urgent'] %}
+                <option value="{{ priority }}" {% if support_request.priority == priority %}selected{% endif %}>{{ priority }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="assigned_to_id">Assigned to</label>
+        <select id="assigned_to_id" name="assigned_to_id">
+            <option value="">Unassigned</option>
+            {% for agent in agents %}
+                <option value="{{ agent.id }}" {% if support_request.assigned_to_id == agent.id %}selected{% endif %}>{{ agent.name }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="comment">Comment</label>
+        <textarea id="comment" name="comment" rows="4"></textarea>
+
+        <button type="submit">Save changes</button>
+    </form>
+</section>
+{% endblock %}
